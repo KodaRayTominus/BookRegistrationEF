@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -27,6 +28,38 @@ namespace BookRegistrationEF
             BookContext context = new BookContext();
 
             context.Book.Add(b);
+
+            context.SaveChanges();
+        }
+
+        /**
+         * EF will track an object if you pul it
+         * out of the database and the do modifications
+         * */
+        public static void Update(Book b)
+        {
+            BookContext context = new BookContext();
+
+            //get book from database
+            Book originalBook = context.Book.Find(b.ISBN);
+
+            //update any changed properties
+            originalBook.Price = b.Price;
+            originalBook.Title = b.Title;
+
+            context.SaveChanges();
+        }
+
+        //method 2
+        public static void UpdateAlt(Book b)
+        {
+            BookContext context = new BookContext();
+
+            //add book to current context
+            context.Book.Add(b);
+
+            //let EF know the book already exsists
+            context.Entry(b).State = EntityState.Modified;
 
             context.SaveChanges();
         }
